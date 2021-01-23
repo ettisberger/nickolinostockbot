@@ -16,22 +16,30 @@ bot.on('sticker', (ctx) => ctx.reply("Nice sticker."));
 
 bot.on('message', (ctx) => {
   console.log(ctx.message);
-  if (ctx.message !== null && ctx.message.text != null && ctx.message.text.startsWith("$")) {
-    const commands = ctx.message.text.split(" ");
-    const symbol = commands[0].substring(1);
 
-    if (commands.length > 1) {
-      handleCommands(commands, ctx, symbol);
-    } else {
+  if (ctx.message !== null) {
+    if (ctx.message.text != null && ctx.message.text.startsWith("$")) {
+      const symbol = ctx.message.text.substring(1);
       iex.latest(ctx, symbol);
+    } else if (ctx.message.text != null && ctx.message.text.startsWith("/")) {
+      const parameters = ctx.message.text.split(" ");
+
+      if (parameters.length === 1) {
+        ctx.reply(`Missing parameter.`)
+      } else {
+        handleCommands(ctx, parameters);
+      }
     }
   }
+
 });
+
 
 bot.launch();
 
-function handleCommands(commands, ctx, symbol) {
-  const command = commands[1];
+function handleCommands(ctx, parameters) {
+  const command = parameters[0].substring(1);
+  const symbol = parameters[1];
 
   if (command) {
     switch (command) {
@@ -43,6 +51,15 @@ function handleCommands(commands, ctx, symbol) {
         break;
       case "info":
         iex.info(ctx, symbol);
+        break;
+      case "stock":
+        iex.latest(ctx, symbol);
+        break;
+      case "convert":
+        const amount = parameters[1];
+        const currencyFrom = parameters[2];
+        const currencyTo = parameters[3];
+        iex.convert(ctx, amount, currencyFrom, currencyTo);
         break;
       default:
         break;

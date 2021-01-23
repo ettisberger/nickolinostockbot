@@ -29,7 +29,8 @@ module.exports = {
       ctx.replyWithMarkdown(`$${response.symbol} (${response.companyName}, ${response.primaryExchange})\
       \nLast available stock price is *$${response.latestPrice}*. \
       \nDaily change: *${(response.changePercent * 100).toFixed(2)}%* ($${response.change})\
-      \n\nLast update ${new Date(response.latestUpdate)}`);
+      \n\nLast update ${new Date(response.latestUpdate)}\
+      \nSource: ${response.latestSource}`);
     }).catch(error => {
       console.log(error);
       ctx.reply(`Damn something went wrong >__>`);
@@ -42,7 +43,8 @@ module.exports = {
       ctx.replyWithMarkdown(`$${data.symbol} last available crypto price is *${data.latestPrice}*.\
       \nDaily H/L: ${data.high ? data.high : "missing"}/${data.low ? data.low : "missing"}.\
       \nPrevious close: ${data.previousClose ? data.previousClose : "missing"}\
-      \n\nLast update ${new Date(data.latestUpdate)}.`);
+      \n\nLast update ${new Date(data.latestUpdate)}.\
+      \nSource: ${data.latestSource}`);
 
     }).catch(error => {
       console.log(error);
@@ -57,6 +59,14 @@ module.exports = {
         const data = response[0];
         ctx.replyWithMarkdown(`$${data.symbol} pays out *${data.amount} ${data.currency}*. Last payment on ${data.paymentDate}`);
       }
+    }).catch(error => {
+      console.log(error);
+      ctx.reply(`Damn something went wrong >__>`);
+    })
+  },
+  convert: function (ctx, amount, currencyFrom, currencyTo) {
+    iex.symbol(`${currencyFrom}${currencyTo}`).forex().convert({ amount, symbols: ["CHFUSD"] }).then(response => {
+      console.log(response)
     }).catch(error => {
       console.log(error);
       ctx.reply(`Damn something went wrong >__>`);
