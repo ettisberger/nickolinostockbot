@@ -1,11 +1,20 @@
 const { IEXCloudClient } = require("node-iex-cloud");
 const axios = require("axios");
+const Parse = require('parse/node');
 
 const iex = new IEXCloudClient(axios, {
   sandbox: false,
   publishable: process.env.STOCK_REST_API_KEY,
   version: "stable"
 })
+
+
+Parse.serverURL = process.env.PARSE_SERVER_URL;
+Parse.initialize(
+  process.env.PARSE_APPLICATION_ID,
+  process.env.PARSE_JS_KEY,
+  process.env.PARSE_MASTER_KEY
+);
 
 module.exports = {
   info: function (ctx, symbol) {
@@ -23,14 +32,16 @@ module.exports = {
     });
   },
   latest: function (ctx, symbol) {
-    iex.symbol(symbol).quote().then(response => {
-      console.log(response)
+    iex.symbol(symbol).quote().then(data => {
+      console.log(data)
 
-      ctx.replyWithMarkdown(`$${response.symbol} (${response.companyName}, ${response.primaryExchange})\
-      \nLast available stock price is *$${response.latestPrice}*. \
-      \nDaily change: *${(response.changePercent * 100).toFixed(2)}%* ($${response.change})\
-      \n\nLast update ${new Date(response.latestUpdate)}\
-      \nSource: ${response.latestSource}`);
+      ctx.replyWithMarkdown(`$${data.symbol} (${data.companyName}, ${data.primaryExchange})\
+      \n\nLast available stock price is *${data.latestPrice}*. \
+      \nDaily change: *${(data.changePercent * 100).toFixed(2)}%* (${data.change})\
+      \n\nW52 High: ${(data.week52High).toFixed(2)}\
+      \nW52 Low: ${(data.week52Low).toFixed(2)}\
+      \n\nLast update ${new Date(data.latestUpdate)}\
+      \nSource: ${data.latestSource}`);
     }).catch(error => {
       console.log(error);
       ctx.reply(`Damn something went wrong >__>`);
@@ -71,5 +82,25 @@ module.exports = {
       console.log(error);
       ctx.reply(`Damn something went wrong >__>`);
     })
-  }
+  },
+  isin: function(ctx, isinNumber) {
+    axios.get(process.env.STOPK_REST_BASE_URL + '/ref-data/isin', {
+      params: {
+        token: process.env.STOCK_REST_API_KEY,
+        isin: isinNumber
+      }
+    })
+    .then(function (response) {
+      console.log(response.data);
+
+      let symbols = "";
+      response.data.forEach((s => {
+        symbols += `*${s.symbol}* / Region: ${s.region} / Exchange: ${s.exchange}\n`;
+      }))
+      ctx.replyWithMarkdown(symbols);
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+  },
 };

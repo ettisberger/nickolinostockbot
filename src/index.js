@@ -1,5 +1,6 @@
 require("dotenv").config();
-const iex = require("./functions")
+const iex = require("./iex")
+const parse = require("./parse")
 const { Telegraf } = require("telegraf");
 const botToken = process.env.BOT_TOKEN;
 const bot = new Telegraf(botToken);
@@ -55,11 +56,18 @@ function handleCommands(ctx, parameters) {
       case "stock":
         iex.latest(ctx, symbol);
         break;
+      // paid feature, doesnt work
       case "convert":
         const amount = parameters[1];
         const currencyFrom = parameters[2];
         const currencyTo = parameters[3];
         iex.convert(ctx, amount, currencyFrom, currencyTo);
+        break;
+      case "isin":
+        iex.isin(ctx, symbol);
+        break;
+      case "portfolio":
+        parse.portfolio(ctx, parameters);
         break;
       default:
         break;
