@@ -15,10 +15,10 @@ module.exports = {
         }
       })
       .then(function (response) {
-        console.log(response.results);
+        console.log(response);
 
-        if(response.results){
-          const rate = response.results[0].val;
+        if(response.data.results){
+          const rate = response.data.results[0].val;
           var total = rate * amount;
           cb(null, Math.round(total * 100) / 100);
         } else {
