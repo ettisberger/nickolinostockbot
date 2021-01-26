@@ -33,7 +33,7 @@ bot.on('message', (ctx) => {
     }
     
     if(containsToTheMoonText(ctx.message.text)){
-      ctx.replyWithMarkdown(`\n:rocket::rocket::rocket:\n`
+      ctx.replyWithMarkdown(`\n:rocket::rocket::rocket:\n`);
     }
 });
 
