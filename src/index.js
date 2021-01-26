@@ -14,7 +14,7 @@ bot.start(ctx => {
   }
 });
 
-bot.command('test', ctx => {
+/*bot.command('test', ctx => {
     ctx.reply(`Test works.`);
 });
 
@@ -24,7 +24,7 @@ bot.on('text', ctx => {
   if(text.includes("testtesttest")){
         ctx.reply(`Test works.`);
   }
-});
+});*/
 
 bot.on('sticker', (ctx) => ctx.reply("Nice sticker."));
 
