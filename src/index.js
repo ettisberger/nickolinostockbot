@@ -14,6 +14,18 @@ bot.start(ctx => {
   }
 });
 
+bot.command('test', ctx => {
+    ctx.reply(`Test works.`);
+});
+
+bot.on('text', ctx => {
+  const text = ctx.message.text.toLowerCase()
+  
+  if(text.includes("testtesttest")){
+        ctx.reply(`Test works.`);
+  }
+});
+
 bot.on('sticker', (ctx) => ctx.reply("Nice sticker."));
 
 bot.on('message', (ctx) => {
