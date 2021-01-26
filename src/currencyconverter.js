@@ -1,47 +1,18 @@
 const axios = require('axios').default;
 
 module.exports = {
-  convert: function(ctx, amount, fromCurrency, toCurrency){
-    this.convertCurrency(amount, fromCurrency, toCurrency, function(err, amountConverted) {
-      if(err){
-        ctx.reply(`Could not convert currencies.`);
-        console.log(err);
-      } else {
-        ctx.replyWithMarkdown(`${amount} ${fromCurrency.toUpperCase()} to ${toCurrency.toUpperCase()} is *${amountConverted} ${toCurrency.toUpperCase()}*`);
-      }
-    });
+  convert: async function (ctx, amount, fromCurrency, toCurrency) {
+
+    try {
+      const calculatedAmount = await this.convertCurrency(amount, fromCurrency, toCurrency);
+      ctx.replyWithMarkdown(`${amount} ${fromCurrency.toUpperCase()} to ${toCurrency.toUpperCase()} is *${calculatedAmount} ${toCurrency.toUpperCase()}*`);
+    }
+    catch (error) {
+      ctx.reply(`Could not convert currencies.`);
+      console.log(error);
+    }
   },
-  convertCurrency: function(amount, fromCurrency, toCurrency, cb) {
-    const apiKey = process.env.CURRENCY_CONVERTER_API_KEY;
-
-    fromCurrency = encodeURIComponent(fromCurrency);
-    toCurrency = encodeURIComponent(toCurrency);
-    const query = fromCurrency + '_' + toCurrency;
-
-    axios.get(process.env.CURRENCY_CONVERTER_API_BASE_URL + '/api/v7/convert', {
-        params: {
-          q: query,
-          apiKey
-        }
-      })
-      .then(function (response) {
-        if(response.data.results){
-          const key = Object.keys(response.data.results)[0];
-          const rate = response.data.results[key].val;
-          const total = rate * amount;
-          cb(null, Math.round(total * 100) / 100);
-        } else {
-          const err = new Error("Value not found for " + query);
-          cb(err);
-        }
-      })
-      .catch(function (error) {
-          console.log(error);
-          const err = new Error("Parse error for " + query);
-          cb(err);
-      })
-    },
-  test: async function(amount, fromCurrency, toCurrency) {
+  convertCurrency: async function (amount, fromCurrency, toCurrency) {
     const apiKey = process.env.CURRENCY_CONVERTER_API_KEY;
 
     fromCurrency = encodeURIComponent(fromCurrency);
@@ -49,14 +20,15 @@ module.exports = {
     const query = fromCurrency + '_' + toCurrency;
 
     try {
-      const response = await axios.get(process.env.CURRENCY_CONVERTER_API_BASE_URL + '/api/v7/convert', {
-        params: {
-          q: query,
-          apiKey
-        }
-      })
+      const response = await axios.get(process.env.CURRENCY_CONVERTER_API_BASE_URL + '/api/v7/convert',
+        {
+          params: {
+            q: query,
+            apiKey
+          }
+        })
 
-      if(response.data.results){
+      if (response.data.results) {
         const key = Object.keys(response.data.results)[0];
         const rate = response.data.results[key].val;
         const total = rate * amount;
@@ -67,7 +39,8 @@ module.exports = {
         return new Error("Value not found for " + query);
       }
 
-    } catch(error) {
+    }
+    catch (error) {
       console.log(error);
       return new Error("Parse error for " + query);
     }
