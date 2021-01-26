@@ -1,2 +1,2 @@
-module.exports = ["andybiotika"]
+module.exports = ["andybiotika", "m4soo"]
 ;

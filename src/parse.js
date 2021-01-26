@@ -1,6 +1,8 @@
 const admins = require("./admins");
 const axios = require("axios");
 const Parse = require('parse/node');
+const currencyConverter = require("./currencyconverter")
+const iex = require("./iex")
 
 Parse.serverURL = process.env.PARSE_SERVER_URL;
 Parse.initialize(
@@ -45,7 +47,7 @@ async function create(ctx, name) {
     query.equalTo("name", name);
     const portfolios = await query.find();
 
-    if(Array.isArray(portfolios) && portfolios.length){
+    if (Array.isArray(portfolios) && portfolios.length) {
       ctx.reply(`Portfolio already exists.`);
     } else {
       const Portfolio = Parse.Object.extend('Portfolio');
@@ -82,12 +84,13 @@ async function remove(ctx, name) {
 }
 
 async function set(ctx, parameters) {
-  if (parameters.length !== 5) {
-    ctx.reply(`Missing parameters. Add portfolio entry with /portfolio <name> set <symbol> <quantity>`);
+  if (parameters.length !== 6) {
+    ctx.reply(`Missing parameters. Add portfolio entry with /portfolio <name> set <symbol> <quantity> <currency>`);
   } else {
     const portfolioName = parameters[1];
     const symbol = parameters[3];
     const quantity = parameters[4];
+    const currency = parameters[5];
 
     const query = new Parse.Query("Portfolio");
     query.equalTo("name", portfolioName);
@@ -100,11 +103,13 @@ async function set(ctx, parameters) {
       const entry = new PortfolioEntry();
       entry.set('symbol', symbol.toUpperCase());
       entry.set('quantity', Number.parseFloat(quantity));
+      entry.set('currency', currency.toUpperCase());
       entry.set('portfolio', portfolio);
 
       entry.save().then(
         (result) => {
-          ctx.reply(`Added portfolio entry: ${result.get("symbol").toUpperCase()}, ${result.get("quantity")}`);
+          ctx.reply(`Added portfolio entry: ${result.get("symbol").toUpperCase()}, ${result.get(
+            "quantity")}, ${result.get("currency")}`);
         },
         (error) => {
           console.log(error)
@@ -115,21 +120,40 @@ async function set(ctx, parameters) {
   }
 }
 
-async function print(ctx, name){
+async function print(ctx, name) {
+  const username = ctx.message.from.username;
+
   let query = new Parse.Query("Portfolio");
   query.equalTo("name", name);
   const portfolios = await query.find();
 
-  const PortfolioEntry = Parse.Object.extend('PortfolioEntry');
-  query = new Parse.Query(PortfolioEntry);
-  query.equalTo("portfolio", portfolios[0]);
-  const entries = await query.find();
+  const userQuery = new Parse.Query(portfolios[0].get("telegramUser"));
+  const user = await userQuery.find();
+  const telegramId = user[0].get("telegramId");
 
-  let entryString = `Portfolio ${name}\n\n`;
+  if (telegramId === username) {
+    const PortfolioEntry = Parse.Object.extend('PortfolioEntry');
+    query = new Parse.Query(PortfolioEntry);
+    query.equalTo("portfolio", portfolios[0]);
+    const entries = await query.find();
 
-  entries.forEach(e => {
-    entryString += `${e.get("symbol")} => ${e.get("quantity")}\n`;
-  })
+    let entryString = `Portfolio ${name}\n\n`;
+    let total = 0;
 
-  await ctx.replyWithMarkdown(entryString);
+    for (const e of entries) {
+      const quote = await iex.quote(e.get("symbol"));
+      const ratingAmount = quote.latestPrice * e.get("quantity");
+      const amount = await currencyConverter.test(ratingAmount, e.get("currency"), "CHF");
+      total += amount;
+      entryString += `${e.get("symbol")}\t\t${e.get("quantity")}\t\t(${ratingAmount.toFixed(2)} ${e.get(
+        "currency")})\n`;
+    }
+
+    entryString += `\nTotal *${total.toFixed(2)} CHF*\n`;
+
+    await ctx.replyWithMarkdown(entryString);
+  } else {
+    ctx.replyWithMarkdown("This is not your own portfolio.");
+  }
+
 }

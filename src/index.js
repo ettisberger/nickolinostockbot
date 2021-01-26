@@ -62,14 +62,6 @@ bot.on('text', (ctx) => {
     if (startsWithSymbolSign(ctx.message.text)) {
       const symbol = ctx.message.text.substring(1);
       iex.latest(ctx, symbol);
-    } else if (startsWithCommandSign(ctx.message.text)) {
-      const parameters = ctx.message.text.split(" ");
-
-      if (parameters.length === 1) {
-        ctx.reply(`Missing parameter.`)
-      } else {
-        handleCommands(ctx, parameters);
-      }
     }
     
     if(containsToTheMoonText(ctx.message.text)){
@@ -87,10 +79,6 @@ function containsToTheMoonText(text) {
 
 function startsWithSymbolSign(text) {
   return text != null && text.startsWith("$");
-}
-
-function startsWithCommandSign(text) {
-  return text != null && text.startsWith("/");
 }
 
 function getParameters(text){

@@ -31,6 +31,9 @@ module.exports = {
       `)
     });
   },
+  quote: function(symbol) {
+    return iex.symbol(symbol).quote();
+  },
   latest: function (ctx, symbol) {
     iex.symbol(symbol).quote().then(data => {
       console.log(data)
