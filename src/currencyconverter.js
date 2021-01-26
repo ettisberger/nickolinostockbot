@@ -15,9 +15,8 @@ module.exports = {
         }
       })
       .then(function (response) {
-        console.log(response);
-
         if(response.data.results){
+          console.log(Object.keys(response.data.results));
           const rate = Object.keys(response.data.results)[0].val;
           var total = rate * amount;
           cb(null, Math.round(total * 100) / 100);
