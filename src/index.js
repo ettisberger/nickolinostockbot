@@ -1,6 +1,7 @@
 require("dotenv").config();
 const iex = require("./iex")
 const parse = require("./parse")
+const currencyConverter = require("./currencyconverter")
 const { Telegraf } = require("telegraf");
 const botToken = process.env.BOT_TOKEN;
 const bot = new Telegraf(botToken);
@@ -76,7 +77,14 @@ function handleCommands(ctx, parameters) {
         const amount = parameters[1];
         const currencyFrom = parameters[2];
         const currencyTo = parameters[3];
-        iex.convert(ctx, amount, currencyFrom, currencyTo);
+        
+        currencyConverter.convertCurrency(amount, currencyFrom, currencyTo, function(err, amount) {
+          if(err){
+            ctx.reply(`Could not convert currencies.`);
+          } else {
+            ctx.replyWithMarkdown(`${currencyFrom} to ${currencyTo} is *${amount} ${currencyTo}*`);
+          }
+        });
         break;
       case "isin":
         iex.isin(ctx, symbol);
