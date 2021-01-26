@@ -84,7 +84,7 @@ module.exports = {
     })
   },
   isin: function(ctx, isinNumber) {
-    axios.get(process.env.STOPK_REST_BASE_URL + '/ref-data/isin', {
+    axios.get(process.env.STOCK_REST_BASE_URL + '/ref-data/isin', {
       params: {
         token: process.env.STOCK_REST_API_KEY,
         isin: isinNumber
