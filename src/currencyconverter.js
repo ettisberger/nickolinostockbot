@@ -35,7 +35,6 @@ module.exports = {
 
         return Math.round(total * 100) / 100;
       } else {
-        // cb(err);
         return new Error("Value not found for " + query);
       }
 

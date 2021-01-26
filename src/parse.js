@@ -123,13 +123,11 @@ async function set(ctx, parameters) {
 async function print(ctx, name) {
   const username = ctx.message.from.username;
 
-  let query = new Parse.Query("Portfolio");
+  let query = new Parse.Query("Portfolio").include("telegramUser");
   query.equalTo("name", name);
   const portfolios = await query.find();
 
-  const userQuery = new Parse.Query(portfolios[0].get("telegramUser"));
-  const user = await userQuery.find();
-  const telegramId = user[0].get("telegramId");
+  const telegramId = portfolios[0].get("telegramUser").get("telegramId");
 
   if (telegramId === username) {
     const PortfolioEntry = Parse.Object.extend('PortfolioEntry');
@@ -143,7 +141,7 @@ async function print(ctx, name) {
     for (const e of entries) {
       const quote = await iex.quote(e.get("symbol"));
       const ratingAmount = quote.latestPrice * e.get("quantity");
-      const amount = await currencyConverter.test(ratingAmount, e.get("currency"), "CHF");
+      const amount = await currencyConverter.convertCurrency(ratingAmount, e.get("currency"), "CHF");
       total += amount;
       entryString += `${e.get("symbol")}\t\t${e.get("quantity")}\t\t(${ratingAmount.toFixed(2)} ${e.get(
         "currency")})\n`;
