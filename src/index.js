@@ -43,7 +43,7 @@ bot.on('message', (ctx) => {
 bot.launch();
   
 function containsToTheMoonText(text) {
-  return text != null && text.includes("to the moon");
+  return text != null && text.toLowerCase().includes("to the moon");
 }
 
 function startsWithSymbolSign(text) {
