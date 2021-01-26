@@ -28,7 +28,7 @@ module.exports = {
         }
       }
     } else {
-      ctx.reply(`You are not an admin user, sorry :(`);
+      ctx.reply(`You are not an admin user, sorry :( (hehehe)`);
     }
   }
 };

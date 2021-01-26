@@ -14,21 +14,48 @@ bot.start(ctx => {
   }
 });
 
-/*bot.command('test', ctx => {
-    ctx.reply(`Test works.`);
-});
-
-bot.on('text', ctx => {
-  const text = ctx.message.text.toLowerCase()
-  
-  if(text.includes("testtesttest")){
-        ctx.reply(`Test works.`);
-  }
-});*/
-
 bot.on('sticker', (ctx) => ctx.reply("Nice sticker."));
 
-bot.on('message', (ctx) => {
+bot.command('crypto', ctx => {
+  const symbol = getParameters(ctx.message.text)[1];
+  iex.cryptos(ctx, symbol);
+});
+
+bot.command('dividends', ctx => {
+  const symbol = getParameters(ctx.message.text)[1];
+  iex.dividends(ctx, symbol);
+});
+
+bot.command('info', ctx => {
+  const symbol = getParameters(ctx.message.text)[1];
+  iex.info(ctx, symbol);
+});
+
+bot.command('stock', ctx => {
+  const symbol = getParameters(ctx.message.text)[1];
+  iex.latest(ctx, symbol);
+});
+
+bot.command('isin', ctx => {
+  const symbol = getParameters(ctx.message.text)[1];
+  iex.isin(ctx, symbol);
+});
+
+bot.command('portfolio', ctx => {
+  const parameters = getParameters(ctx.message.text);
+  parse.portfolio(ctx, parameters);
+});
+
+bot.command('convert', ctx => {
+  const parameters = getParameters(ctx.message.text);
+  const amount = parameters[1];
+  const currencyFrom = parameters[2];
+  const currencyTo = parameters[3];
+
+  currencyConverter.convert(ctx, amount, currencyFrom, currencyTo);
+});
+
+bot.on('text', (ctx) => {
   console.log(ctx.message);
 
   if (ctx.message !== null) {
@@ -66,47 +93,6 @@ function startsWithCommandSign(text) {
   return text != null && text.startsWith("/");
 }
 
-function handleCommands(ctx, parameters) {
-  const command = parameters[0].substring(1);
-  const symbol = parameters[1];
-
-  if (command) {
-    switch (command) {
-      case "crypto":
-        iex.cryptos(ctx, symbol);
-        break;
-      case "dividends":
-        iex.dividends(ctx, symbol);
-        break;
-      case "info":
-        iex.info(ctx, symbol);
-        break;
-      case "stock":
-        iex.latest(ctx, symbol);
-        break;
-      // paid feature, doesnt work
-      case "convert":
-        const amount = parameters[1];
-        const currencyFrom = parameters[2];
-        const currencyTo = parameters[3];
-        
-        currencyConverter.convertCurrency(amount, currencyFrom, currencyTo, function(err, amountConverted) {
-          if(err){
-            ctx.reply(`Could not convert currencies.`);
-            console.log(err);
-          } else {
-            ctx.replyWithMarkdown(`${amount} ${currencyFrom.toUpperCase()} to ${currencyTo.toUpperCase()} is *${amountConverted} ${currencyTo.toUpperCase()}*`);
-          }
-        });
-        break;
-      case "isin":
-        iex.isin(ctx, symbol);
-        break;
-      case "portfolio":
-        parse.portfolio(ctx, parameters);
-        break;
-      default:
-        break;
-    }
-  }
+function getParameters(text){
+  return text.split(" ");
 }
