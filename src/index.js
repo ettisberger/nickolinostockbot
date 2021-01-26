@@ -81,6 +81,7 @@ function handleCommands(ctx, parameters) {
         currencyConverter.convertCurrency(amount, currencyFrom, currencyTo, function(err, amount) {
           if(err){
             ctx.reply(`Could not convert currencies.`);
+            console.log(err);
           } else {
             ctx.replyWithMarkdown(`${currencyFrom} to ${currencyTo} is *${amount} ${currencyTo}*`);
           }
