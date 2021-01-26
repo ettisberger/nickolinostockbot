@@ -78,12 +78,12 @@ function handleCommands(ctx, parameters) {
         const currencyFrom = parameters[2];
         const currencyTo = parameters[3];
         
-        currencyConverter.convertCurrency(amount, currencyFrom, currencyTo, function(err, amount) {
+        currencyConverter.convertCurrency(amount, currencyFrom, currencyTo, function(err, amountConverted) {
           if(err){
             ctx.reply(`Could not convert currencies.`);
             console.log(err);
           } else {
-            ctx.replyWithMarkdown(`${amount} ${currencyFrom.toUpperCase()} to ${currencyTo.toUpperCase()} is *${amount} ${currencyTo.toUpperCase()}*`);
+            ctx.replyWithMarkdown(`${amount} ${currencyFrom.toUpperCase()} to ${currencyTo.toUpperCase()} is *${amountConverted} ${currencyTo.toUpperCase()}*`);
           }
         });
         break;
