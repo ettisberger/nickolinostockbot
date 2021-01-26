@@ -19,10 +19,10 @@ bot.on('message', (ctx) => {
   console.log(ctx.message);
 
   if (ctx.message !== null) {
-    if (ctx.message.text != null && ctx.message.text.startsWith("$")) {
+    if (startsWithSymbolSign(ctx.message.text)) {
       const symbol = ctx.message.text.substring(1);
       iex.latest(ctx, symbol);
-    } else if (ctx.message.text != null && ctx.message.text.startsWith("/")) {
+    } else if (startsWithCommandSign(ctx.message.text)) {
       const parameters = ctx.message.text.split(" ");
 
       if (parameters.length === 1) {
@@ -31,12 +31,26 @@ bot.on('message', (ctx) => {
         handleCommands(ctx, parameters);
       }
     }
-  }
-
+    
+    if(containsToTheMoonText(ctx.message.text)){
+      ctx.replyWithMarkdown(`\n:rocket::rocket::rocket:\n`
+    }
 });
 
 
 bot.launch();
+  
+function containsToTheMoonText(text) {
+  return text != null && text.includes("to the moon");
+}
+
+function startsWithSymbolSign(text) {
+  return text != null && text.startsWith("$");
+}
+
+function startsWithCommandSign(text) {
+  return text != null && text.startsWith("/");
+}
 
 function handleCommands(ctx, parameters) {
   const command = parameters[0].substring(1);
