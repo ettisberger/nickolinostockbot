@@ -83,7 +83,7 @@ function handleCommands(ctx, parameters) {
             ctx.reply(`Could not convert currencies.`);
             console.log(err);
           } else {
-            ctx.replyWithMarkdown(`${currencyFrom.toUpperCase()} to ${currencyTo.toUpperCase()} is *${amount} ${currencyTo.toUpperCase()}*`);
+            ctx.replyWithMarkdown(`${amount} ${currencyFrom.toUpperCase()} to ${currencyTo.toUpperCase()} is *${amount} ${currencyTo.toUpperCase()}*`);
           }
         });
         break;
