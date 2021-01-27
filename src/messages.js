@@ -1,42 +1,27 @@
-const casinoKeywords = ["trade", "play", "drop", "buy high sell low"];
-const moonKeywords = ["to the mo+n"];
-const momKeywords = ["crash"];
-const investKeywords = ["invest"];
+const casinoKeywords = ["trade", "play", "drop", "buy high sell low", "to the mo+n", "crash", "invest"];
+const quotes = [
+  `\n\u{1F680} \u{1F680} \u{1F680} \u{1F680} \u{1F680}\n`,
+  `\n\u{1F680} Sir, this is a casino. \u{1F680}\n`,
+  `\n"Hello mom? Is my old room still available?"\n`,
+  `\nIf you don't find a way to make money while you sleep, you will work until you die.\n`
+];
 
 module.exports = {
   onText: function(ctx, text) {
-    if(containsToTheMoonText(ctx.message.text)){
-      ctx.replyWithMarkdown(`\n\u{1F680} \u{1F680} \u{1F680} \u{1F680} \u{1F680}\n`);
-    }
+      const matches = casinoKeywords.filter(function (pattern) {
+        return new RegExp(pattern).test(text.toLowerCase());
+      }).length >= 1;
 
-    if(containsCasinoText(ctx.message.text)){
-      ctx.replyWithMarkdown(`\n\u{1F680} Sir, this is a casino. \u{1F680}\n`);
-    }
+      if(matches){
+        const randomNumber = Math.random();
 
-    if(containsMomText(ctx.message.text)){
-      ctx.replyWithMarkdown(`\n"Hello mom? Is my old room still available?"\n`);
-    }
-
-    if(containsInvestText(ctx.message.text)){
-      ctx.replyWithMarkdown(`\nIf you don't find a way to make money while you sleep, you will work until you die.\n`);
-    }
+        if(randomNumber <= 0.2){
+          ctx.replyWithMarkdown(quotes[randomNumberInRange(0, quotes.length - 1)])
+        }
+      }
   }
 }
 
-function containsToTheMoonText(text) {
-  return moonKeywords.filter(function (pattern) {
-    return new RegExp(pattern).test(text);
-  }).length >= 1;
-}
-
-function containsCasinoText(text) {
-  return text != null && (casinoKeywords.includes(text.toLowerCase()));
-}
-
-function containsMomText(text) {
-  return text != null && (momKeywords.includes(text.toLowerCase()));
-}
-
-function containsInvestText(text) {
-  return text != null && (investKeywords.includes(text.toLowerCase()));
+function randomNumberInRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
