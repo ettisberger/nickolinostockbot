@@ -41,8 +41,8 @@ module.exports = {
       ctx.replyWithMarkdown(`$${data.symbol} (${data.companyName}, ${data.primaryExchange})\
       \n\nLast available stock price is *${data.latestPrice}*. \
       \nDaily change: *${(data.changePercent * 100).toFixed(2)}%* (${data.change})\
-      \n\nW52 High: ${(data.week52High).toFixed(2)}\
-      \nW52 Low: ${(data.week52Low).toFixed(2)}\
+      \n\nW52 High: ${(data.week52High)? (data.week52High).toFixed(2): "missing"}\
+      \nW52 Low: ${(data.week52Low)?(data.week52Low).toFixed(2):"missing"}\
       \n\nLast update ${new Date(data.latestUpdate)}\
       \nSource: ${data.latestSource}`);
     }).catch(error => {

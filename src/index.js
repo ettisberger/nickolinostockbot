@@ -2,6 +2,7 @@ require("dotenv").config();
 const iex = require("./iex")
 const parse = require("./parse")
 const currencyConverter = require("./currencyconverter")
+const messages = require("./messages")
 const { Telegraf } = require("telegraf");
 const botToken = process.env.BOT_TOKEN;
 const bot = new Telegraf(botToken);
@@ -63,27 +64,13 @@ bot.on('text', (ctx) => {
       const symbol = ctx.message.text.substring(1);
       iex.latest(ctx, symbol);
     }
-    
-    if(containsToTheMoonText(ctx.message.text)){
-      ctx.replyWithMarkdown(`\n\u{1F680} \u{1F680} \u{1F680} \u{1F680} \u{1F680}\n`);
-    }
-    
-    if(containsCasinoText(ctx.message.text)){
-      ctx.replyWithMarkdown(`\nSir, this is a casino.\n`);
-    }
+
+    messages.onText(ctx, ctx.message.text);
   }
 });
 
 
 bot.launch();
-  
-function containsToTheMoonText(text) {
-  return text != null && text.toLowerCase().includes("to the moon");
-}
-  
-function containsCasinoText(text) {
-  return text != null && (text.toLowerCase().includes("trade") || text.toLowerCase().includes("play") || text.toLowerCase().includes("drop"));
-}
 
 function startsWithSymbolSign(text) {
   return text != null && text.startsWith("$");
