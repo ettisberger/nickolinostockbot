@@ -68,8 +68,8 @@ bot.on('text', (ctx) => {
       ctx.replyWithMarkdown(`\n\u{1F680} \u{1F680} \u{1F680} \u{1F680} \u{1F680}\n`);
     }
     
-        if(containsCasinoText(ctx.message.text)){
-      ctx.replyWithMarkdown(`\n\uSir, this is a casino.\n`);
+    if(containsCasinoText(ctx.message.text)){
+      ctx.replyWithMarkdown(`\nSir, this is a casino.\n`);
     }
   }
 });
