@@ -30,7 +30,9 @@ function containsToTheMoonText(text) {
 }
 
 function containsCasinoText(text) {
-  return text != null && (casinoKeywords.includes(text.toLowerCase()));
+  return casinoKeywords.filter(function (pattern) {
+    return new RegExp(pattern).test(text);
+  }).length >= 1;
 }
 
 function containsMomText(text) {
@@ -40,5 +42,7 @@ function containsMomText(text) {
 }
 
 function containsInvestText(text) {
-  return text != null && (investKeywords.includes(text.toLowerCase()));
+  return investKeywords.filter(function (pattern) {
+    return new RegExp(pattern).test(text);
+  }).length >= 1;
 }
