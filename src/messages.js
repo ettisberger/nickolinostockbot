@@ -34,7 +34,9 @@ function containsCasinoText(text) {
 }
 
 function containsMomText(text) {
-  return text != null && (momKeywords.includes(text.toLowerCase()));
+  return momKeywords.filter(function (pattern) {
+    return new RegExp(pattern).test(text);
+  }).length >= 1;
 }
 
 function containsInvestText(text) {
