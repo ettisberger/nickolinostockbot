@@ -67,6 +67,10 @@ bot.on('text', (ctx) => {
     if(containsToTheMoonText(ctx.message.text)){
       ctx.replyWithMarkdown(`\n\u{1F680} \u{1F680} \u{1F680} \u{1F680} \u{1F680}\n`);
     }
+    
+        if(containsCasinoText(ctx.message.text)){
+      ctx.replyWithMarkdown(`\n\uSir, this is a casino.\n`);
+    }
   }
 });
 
@@ -75,6 +79,10 @@ bot.launch();
   
 function containsToTheMoonText(text) {
   return text != null && text.toLowerCase().includes("to the moon");
+}
+  
+function containsCasinoText(text) {
+  return text != null && text.toLowerCase().includes("trade");
 }
 
 function startsWithSymbolSign(text) {
