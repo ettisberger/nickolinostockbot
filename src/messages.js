@@ -7,18 +7,18 @@ const quotes = [
 ];
 
 module.exports = {
-  onText: function(ctx, text) {
-      const matches = casinoKeywords.filter(function (pattern) {
-        return new RegExp(pattern).test(text.toLowerCase());
-      }).length >= 1;
+  onText: function (ctx, text) {
+    const matches = casinoKeywords.filter(function (pattern) {
+      return new RegExp(pattern).test(text.toLowerCase());
+    }).length >= 1;
 
-      if(matches){
-        const randomNumber = Math.random();
+    if (matches) {
+      const randomNumber = Math.random();
 
-        if(randomNumber <= 0.2){
-          ctx.replyWithMarkdown(quotes[randomNumberInRange(0, quotes.length - 1)])
-        }
+      if (randomNumber <= 0.2) {
+        ctx.replyWithMarkdown(quotes[randomNumberInRange(0, quotes.length - 1)])
       }
+    }
   }
 }
 
