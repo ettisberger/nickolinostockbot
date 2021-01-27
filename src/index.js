@@ -82,7 +82,7 @@ function containsToTheMoonText(text) {
 }
   
 function containsCasinoText(text) {
-  return text != null && text.toLowerCase().includes("trade");
+  return text != null && (text.toLowerCase().includes("trade") || text.toLowerCase().includes("play") || text.toLowerCase().includes("drop"));
 }
 
 function startsWithSymbolSign(text) {
