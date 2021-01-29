@@ -1,4 +1,4 @@
-const casinoKeywords = ["trade", "play", "drop", "buy high sell low", "to the mo+n", "crash", "invest"];
+const casinoKeywords = ["trade", "play", "drop", "buy high sell low", "to the mo+n", "crash", "invest", "pussy", "angscht", "retard", "wsb", "gamestop"];
 const quotes = [
   `\n\u{1F680} \u{1F680} \u{1F680} \u{1F680} \u{1F680}\n`,
   `\n\u{1F680} Sir, this is a casino. \u{1F680}\n`,
@@ -27,7 +27,7 @@ module.exports = {
     if (matches) {
       const randomNumber = Math.random();
 
-      if (randomNumber <= 0.2) {
+      if (randomNumber <= 0.40) {
         ctx.replyWithMarkdown(quotes[randomNumberInRange(0, quotes.length - 1)])
       }
     }
